@@ -2,7 +2,7 @@ package university.model;
 
 public class Course {
     
-    private String courseID;
+    private int courseID;
     private String courseName;
     private String description;
 

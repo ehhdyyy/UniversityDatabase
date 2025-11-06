@@ -12,9 +12,19 @@ public class Main {
             System.out.println("Connection established.");
             DatabaseInitializer.initialize(conn);
             var courses = new CourseDAO(conn);
+            var enrollment = new EnrollmentDAO(conn);
+            var students = new StudentDAO(conn);
+
             System.out.println("Before Insert");
-            int cid = courses.insert(new Course("Introduction to Database Management Systems", "dbms!"));
+
+            int cid = courses.insert(new Course("Data Structures and Algorithms", "dsa!"));
             System.out.println("Inserted course id=" + cid);
+
+            int sid = students.insert(new Student("Yan", "Jason", "Data Science"));
+            System.out.println("Inserted student id=" + sid);
+
+            int eid = enrollment.insert(new Enrollment(1, 10));
+            System.out.println("Inserted enrollment id=" + eid);
         }
         System.out.println("END main");
     }
