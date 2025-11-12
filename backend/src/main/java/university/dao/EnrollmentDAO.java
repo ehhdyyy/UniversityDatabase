@@ -1,14 +1,17 @@
 package university.dao;
 import java.sql.*;
 import java.util.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import university.model.Enrollment;
 
+@Repository
 public class EnrollmentDAO {
     
-    private Connection conn;
+    private JdbcTemplate jdbc;
 
-    public EnrollmentDAO(Connection conn) {
-        this.conn = conn;
+    public EnrollmentDAO(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
     public void createTable() throws SQLException {
@@ -20,64 +23,74 @@ public class EnrollmentDAO {
                     UNIQUE(studentID, sectionID)
                 );
                 """;
-        try (Statement st = conn.createStatement()) {
-            st.execute(sql);
-        }
+        jdbc.execute(sql);
     }
 
     public int insert(Enrollment enrollment) throws Exception{
-        String sql = "INSERT INTO enrollments(studentID, sectionID) VALUES(?,?) RETURNING enrollmentID";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, enrollment.getStudentID());
-            ps.setInt(2, enrollment.getSectionID());
 
-            try (ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    int generatedID = rs.getInt(1);
-                    enrollment.setEnrollmentID(generatedID);
-                    return generatedID;
-                }else{
-                    throw new SQLException("INSERT failed, no ID obtained.");
-                }
-            }
+        String sql = """
+                    INSERT INTO enrollments(studentID, sectionID) 
+                    VALUES(?,?) 
+                    RETURNING enrollmentID
+                    """;
+
+        Integer id = jdbc.queryForObject(
+            sql,
+            Integer.class,
+            enrollment.getStudentID(),
+            enrollment.getSectionID()
+        );
+        if (id == null){
+            throw new SQLException("INSERT failed, no ID obtained.");
         }
+        enrollment.setEnrollmentID(id);
+        return id;
     }
 
     public Enrollment findByID(int enrollmentID) throws Exception {
-        String sql = "SELECT enrollmentID, studentID, sectionID FROM enrollments WHERE enrollmentID = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)){
 
-            ps.setInt(1, enrollmentID);
+        String sql = """
+                    SELECT enrollmentID, studentID, sectionID 
+                    FROM enrollments 
+                    WHERE enrollmentID = ?
+                    """;
 
-            try (ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    return new Enrollment(
-                        rs.getInt("enrollmentID"),
-                        rs.getInt("studentID"),
-                        rs.getInt("sectionID")
-                    );
-                }
-                else{
-                    throw new SQLException("No enrollment found with ID:" + enrollmentID);
-                }
-            }
+        try {
+            return jdbc.queryForObject(
+                sql,
+                (rs, rowNum) -> new Enrollment(
+                    rs.getInt("enrollmentID"),
+                    rs.getInt("studentID"),
+                    rs.getInt("sectionID")
+                ),
+                enrollmentID
+            );
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 
     public int update(Enrollment enrollment) throws Exception{
-        String sql = "UPDATE enrollments SET studentID = ?, sectionID = ? WHERE enrollmentID = ? RETURNING enrollmentID";
-        try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, enrollment.getStudentID());
-            ps.setInt(2, enrollment.getSectionID());
-            ps.setInt(3, enrollment.getEnrollmentID());
 
-            try(ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    return rs.getInt(1);
-                }else{
-                    throw new SQLException("UPDATE failed, no ID obtained.");
-                }
-            }
+        String sql = """
+                    UPDATE enrollments 
+                    SET studentID = ?, sectionID = ? 
+                    WHERE enrollmentID = ? RETURNING enrollmentID
+                    """;
+        
+        Integer id = jdbc.queryForObject(
+            sql,
+            Integer.class,
+            enrollment.getStudentID(),
+            enrollment.getSectionID(),
+            enrollment.getEnrollmentID()
+        );
+        
+        if (id == null){
+            throw new SQLException("UPDATE failed, no ID obtained.");
         }
+        enrollment.setEnrollmentID(id);
+        return id;
     }
 }

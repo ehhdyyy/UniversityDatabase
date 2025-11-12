@@ -1,14 +1,17 @@
 package university.dao;
 import java.sql.*;
 import java.util.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import university.model.Section;
 
+@Repository
 public class SectionDAO {
     
-    private Connection conn;
+    private JdbcTemplate jdbc;
 
-    public SectionDAO(Connection conn) {
-        this.conn = conn;
+    public SectionDAO(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
     public void createTable() throws SQLException {
@@ -20,68 +23,66 @@ public class SectionDAO {
                     term VARCHAR(20) NOT NULL
                 );
                 """;
-        try (Statement st = conn.createStatement()) {
-            st.execute(sql);
-        }
+        jdbc.execute(sql);
     }
 
-    public int insert(Section section) throws Exception{
+    // public int insert(Section section) throws Exception{
 
-        String sql = "INSERT INTO sections(courseID, day_time, term) VALUES(?,?,?) RETURNING sectionID";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, section.getCourseID());
-            ps.setString(2, section.getDayTime());
-            ps.setString(3, section.getTerm());
+    //     String sql = "INSERT INTO sections(courseID, day_time, term) VALUES(?,?,?) RETURNING sectionID";
+    //     try(PreparedStatement ps = conn.prepareStatement(sql)){
+    //         ps.setInt(1, section.getCourseID());
+    //         ps.setString(2, section.getDayTime());
+    //         ps.setString(3, section.getTerm());
 
-            try (ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    int generatedID = rs.getInt(1);
-                    section.setSectionID(generatedID);
-                    return generatedID;
-                }else{
-                    throw new SQLException("INSERT failed, no ID obtained.");
-                }
-            }
-        }
-    }
+    //         try (ResultSet rs = ps.executeQuery()){
+    //             if(rs.next()){
+    //                 int generatedID = rs.getInt(1);
+    //                 section.setSectionID(generatedID);
+    //                 return generatedID;
+    //             }else{
+    //                 throw new SQLException("INSERT failed, no ID obtained.");
+    //             }
+    //         }
+    //     }
+    // }
 
-    public Section findByID(int sectionID) throws Exception {
-        String sql = "SELECT sectionID, courseID, day_time, term FROM sections WHERE sectionID = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, sectionID);
+    // public Section findByID(int sectionID) throws Exception {
+    //     String sql = "SELECT sectionID, courseID, day_time, term FROM sections WHERE sectionID = ?";
+    //     try (PreparedStatement ps = conn.prepareStatement(sql)){
+    //         ps.setInt(1, sectionID);
 
-            try (ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    return new Section(
-                        rs.getInt("sectionID"),
-                        rs.getInt("courseID"),
-                        rs.getString("day_time"),
-                        rs.getString("term")
-                    );
-                }
-                else{
-                    throw new SQLException("No enrollment found with ID:" + sectionID);
-                }
-            }
-        }
-    }
+    //         try (ResultSet rs = ps.executeQuery()){
+    //             if(rs.next()){
+    //                 return new Section(
+    //                     rs.getInt("sectionID"),
+    //                     rs.getInt("courseID"),
+    //                     rs.getString("day_time"),
+    //                     rs.getString("term")
+    //                 );
+    //             }
+    //             else{
+    //                 throw new SQLException("No enrollment found with ID:" + sectionID);
+    //             }
+    //         }
+    //     }
+    // }
 
-    public int update(Section section) throws Exception{
-        String sql = "UPDATE sections SET courseID = ?, day_time = ?, term = ? WHERE sectionID = ? RETURNING sectionID";
-        try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, section.getCourseID());
-            ps.setString(2, section.getDayTime());
-            ps.setString(3, section.getTerm());
-            ps.setInt(4, section.getSectionID());
+    // public int update(Section section) throws Exception{
+    //     String sql = "UPDATE sections SET courseID = ?, day_time = ?, term = ? WHERE sectionID = ? RETURNING sectionID";
+    //     try (PreparedStatement ps = conn.prepareStatement(sql)){
+    //         ps.setInt(1, section.getCourseID());
+    //         ps.setString(2, section.getDayTime());
+    //         ps.setString(3, section.getTerm());
+    //         ps.setInt(4, section.getSectionID());
 
-            try(ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    return rs.getInt(1);
-                }else{
-                    throw new SQLException("UPDATE failed, no ID obtained.");
-                }
-            }
-        }
-    }
+    //         try(ResultSet rs = ps.executeQuery()){
+    //             if(rs.next()){
+    //                 return rs.getInt(1);
+    //             }else{
+    //                 throw new SQLException("UPDATE failed, no ID obtained.");
+    //             }
+    //         }
+    //     }
+    // }
 
 }
