@@ -14,17 +14,16 @@ public class Main {
             var courses = new CourseDAO(conn);
             var enrollment = new EnrollmentDAO(conn);
             var students = new StudentDAO(conn);
+            var sections = new SectionDAO(conn);
+            var grades = new GradeDAO(conn);
 
-            System.out.println("Before Insert");
 
-            int cid = courses.insert(new Course("Data Structures and Algorithms", "dsa!"));
-            System.out.println("Inserted course id=" + cid);
-
-            int sid = students.insert(new Student("Yan", "Jason", "Data Science"));
-            System.out.println("Inserted student id=" + sid);
-
-            int eid = enrollment.insert(new Enrollment(1, 10));
-            System.out.println("Inserted enrollment id=" + eid);
+            Section s = sections.findByID(1);
+            s.setDayTime("MWF 10:00-11:30");
+            s.setTerm("Spring 2026");
+            sections.update(s);
+            System.out.println("Updated Section: " + s.getSectionID());
+        
         }
         System.out.println("END main");
     }

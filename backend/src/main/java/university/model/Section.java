@@ -10,19 +10,25 @@ public class Section {
     public Section() {}
 
     public Section(int courseID, String dayTime, String term){
-        //this.sectionID = sectionID;
         this.courseID = courseID;
         this.dayTime = dayTime;
         this.term = term;
     }
 
-    // public int getSectionID() {
-    //     return sectionID;
-    // }
+    public Section(int sectionID, int courseID, String dayTime, String term){
+        this.sectionID = sectionID;
+        this.courseID = courseID;
+        this.dayTime = dayTime;
+        this.term = term;
+    }
+    
+    public int getSectionID() {
+        return sectionID;
+    }
 
-    // public void setSectionID(int sectionID) {
-    //     this.sectionID = sectionID;
-    // }
+    public void setSectionID(int sectionID) {
+        this.sectionID = sectionID;
+    }
 
     public int getCourseID() {
         return courseID;

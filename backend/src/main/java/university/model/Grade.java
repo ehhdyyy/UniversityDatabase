@@ -9,18 +9,23 @@ public class Grade {
     public Grade() {}
 
     public Grade(int enrollmentID, String grade){
-        //this.gradeID = gradeID;
         this.enrollmentID = enrollmentID;
         this.grade = grade;
     }
 
-    // public int getGradeID() {
-    //     return gradeID;
-    // }
+    public Grade(int gradeID, int enrollmentID, String grade){
+        this.gradeID = gradeID;
+        this.enrollmentID = enrollmentID;
+        this.grade = grade;
+    }
 
-    // public void setGradeID(int gradeID) {
-    //     this.gradeID = gradeID;
-    // }
+    public int getGradeID() {
+        return gradeID;
+    }
+
+    public void setGradeID(int gradeID) {
+        this.gradeID = gradeID;
+    }
 
     public int getEnrollmentID() {
         return enrollmentID;

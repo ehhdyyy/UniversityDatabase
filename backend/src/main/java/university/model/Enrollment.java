@@ -9,18 +9,23 @@ public class Enrollment {
     public Enrollment() {}
 
     public Enrollment(int studentID, int sectionID){
-        //this.enrollmentID = enrollmentID;
         this.studentID = studentID;
         this.sectionID = sectionID;
     }
 
-    // public int getEnrollmentID() {
-    //     return enrollmentID;
-    // }
+    public Enrollment(int enrollmentID, int studentID, int sectionID){
+        this.enrollmentID = enrollmentID;
+        this.studentID = studentID;
+        this.sectionID = sectionID;
+    }
 
-    // public void setEnrollmentID(int enrollmentID) {
-    //     this.enrollmentID = enrollmentID;
-    // }
+    public int getEnrollmentID() {
+        return enrollmentID;
+    }
+
+    public void setEnrollmentID(int enrollmentID) {
+        this.enrollmentID = enrollmentID;
+    }
 
     public int getStudentID() {
         return studentID;

@@ -10,19 +10,25 @@ public class Student {
     public Student() {}
 
     public Student(String lastName, String firstName, String major){
-        //this.studentID = studentID;
         this.lastName = lastName;
         this.firstName = firstName;
         this.major = major;
     }
 
-    // public int getStudentID() {
-    //     return studentID;
-    // }
+    public Student(int studentID, String lastName, String firstName, String major){
+        this.studentID = studentID;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.major = major;
+    }
 
-    // public void setStudentID(int studentID) {
-    //     this.studentID = studentID;
-    // }
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
+    }
 
     public String getLastName() {
         return lastName;
@@ -47,7 +53,5 @@ public class Student {
     public void setMajor(String major) {
         this.major = major;
     }
-
-    
 
 }

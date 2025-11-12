@@ -9,18 +9,23 @@ public class Course {
     public Course() {}
 
     public Course(String courseName, String description){
-        // this.courseID = courseID;
         this.courseName = courseName;
         this.description = description;
     }
 
-    // public String getCourseID() {
-    //     return courseID;
-    // }
+   public Course(int courseID, String courseName, String description){
+        this.courseID = courseID;
+        this.courseName = courseName;
+        this.description = description;
+   }
 
-    // public void setCourseID(String courseID) {
-    //     this.courseID = courseID;
-    // }
+    public int getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
+    }
 
     public String getCourseName() {
         return courseName;

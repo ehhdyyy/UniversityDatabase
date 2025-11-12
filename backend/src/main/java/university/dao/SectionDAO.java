@@ -27,7 +27,7 @@ public class SectionDAO {
 
     public int insert(Section section) throws Exception{
 
-        String sql = "INSERT INTO section(courseID, day_time, term) VALUES(?,?,?) RETURNING sectionID";
+        String sql = "INSERT INTO sections(courseID, day_time, term) VALUES(?,?,?) RETURNING sectionID";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setInt(1, section.getCourseID());
             ps.setString(2, section.getDayTime());
@@ -35,11 +35,53 @@ public class SectionDAO {
 
             try (ResultSet rs = ps.executeQuery()){
                 if(rs.next()){
-                    return rs.getInt(1);
+                    int generatedID = rs.getInt(1);
+                    section.setSectionID(generatedID);
+                    return generatedID;
                 }else{
                     throw new SQLException("INSERT failed, no ID obtained.");
                 }
             }
         }
     }
+
+    public Section findByID(int sectionID) throws Exception {
+        String sql = "SELECT sectionID, courseID, day_time, term FROM sections WHERE sectionID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, sectionID);
+
+            try (ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return new Section(
+                        rs.getInt("sectionID"),
+                        rs.getInt("courseID"),
+                        rs.getString("day_time"),
+                        rs.getString("term")
+                    );
+                }
+                else{
+                    throw new SQLException("No enrollment found with ID:" + sectionID);
+                }
+            }
+        }
+    }
+
+    public int update(Section section) throws Exception{
+        String sql = "UPDATE sections SET courseID = ?, day_time = ?, term = ? WHERE sectionID = ? RETURNING sectionID";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, section.getCourseID());
+            ps.setString(2, section.getDayTime());
+            ps.setString(3, section.getTerm());
+            ps.setInt(4, section.getSectionID());
+
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt(1);
+                }else{
+                    throw new SQLException("UPDATE failed, no ID obtained.");
+                }
+            }
+        }
+    }
+
 }
