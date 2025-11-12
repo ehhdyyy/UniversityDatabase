@@ -81,4 +81,34 @@ public class GradeDAO {
         }
     }
 
+    public List<Grade> findAll() throws SQLException {
+        String sql = "SELECT * FROM grades ORDER BY gradeID";
+        List<Grade> grades = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Grade grade = new Grade(
+                    rs.getInt("gradeID"),
+                    rs.getInt("enrollmentID"),
+                    rs.getString("grade")
+                );
+                grades.add(grade);
+            }
+        }
+        return grades;
+    }
+
+    public void delete(int gradeID) throws SQLException {
+        String sql = "DELETE FROM grades WHERE gradeID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, gradeID);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Delete failed, no grade with ID: " + gradeID);
+            }
+        }
+    }
+
 }

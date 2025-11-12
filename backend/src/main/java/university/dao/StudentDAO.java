@@ -62,4 +62,35 @@ public class StudentDAO {
             }
         }
     }
+
+    public List<Student> findAll() throws SQLException {
+        String sql = "SELECT * FROM students ORDER BY studentID";
+        List<Student> students = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Student student = new Student(
+                    rs.getInt("studentID"),
+                    rs.getString("firstName"),
+                    rs.getString("lastName"),
+                    rs.getString("major")
+                );
+                students.add(student);
+            }
+        }
+        return students;
+    }
+
+    public void delete(int studentID) throws SQLException {
+        String sql = "DELETE FROM students WHERE studentID = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, studentID);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Delete failed, no student with ID: " + studentID);
+            }
+        }
+    }
 }

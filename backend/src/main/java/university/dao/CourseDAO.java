@@ -81,4 +81,34 @@ public class CourseDAO {
             }
         }
     }
+
+        public List<Course> findAll() throws SQLException {
+        String sql = "SELECT * FROM courses ORDER BY courseID";
+        List<Course> courses = new ArrayList<>();
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Course course = new Course(
+                    rs.getInt("courseID"),
+                    rs.getString("courseName"),
+                    rs.getString("description")
+                );
+                courses.add(course);
+            }
+        }
+        return courses;
+    }
+
+    public void delete(int courseID) throws SQLException {
+        String sql = "DELETE FROM courses WHERE courseID = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, courseID);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Delete failed, no course with ID: " + courseID);
+            }
+        }
+    }
 }

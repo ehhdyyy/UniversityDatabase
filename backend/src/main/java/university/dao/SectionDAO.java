@@ -84,4 +84,35 @@ public class SectionDAO {
         }
     }
 
+        public List<Section> findAll() throws SQLException {
+        String sql = "SELECT * FROM sections ORDER BY sectionID";
+        List<Section> sections = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Section section = new Section(
+                    rs.getInt("sectionID"),
+                    rs.getInt("courseID"),
+                    rs.getString("dayTime"),
+                    rs.getString("term")
+                );
+                sections.add(section);
+            }
+        }
+        return sections;
+    }
+
+    public void delete(int sectionID) throws SQLException {
+        String sql = "DELETE FROM sections WHERE sectionID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, sectionID);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Delete failed, no section with ID: " + sectionID);
+            }
+        }
+    }
+
 }

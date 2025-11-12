@@ -80,4 +80,34 @@ public class EnrollmentDAO {
             }
         }
     }
+
+    public List<Enrollment> findAll() throws SQLException {
+        String sql = "SELECT * FROM enrollments ORDER BY enrollmentID";
+        List<Enrollment> enrollments = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Enrollment enrollment = new Enrollment(
+                    rs.getInt("enrollmentID"),
+                    rs.getInt("studentID"),
+                    rs.getInt("sectionID")
+                );
+                enrollments.add(enrollment);
+            }
+        }
+        return enrollments;
+    }
+
+    public void delete(int enrollmentID) throws SQLException {
+        String sql = "DELETE FROM enrollments WHERE enrollmentID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, enrollmentID);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Delete failed, no enrollment with ID: " + enrollmentID);
+            }
+        }
+    }
 }
