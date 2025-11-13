@@ -5,6 +5,7 @@ Java + JDBC demo with PostgreSQL
 - Gradle 9.2+ (via wrapper)
 - JDK 21
 - Postgresql (to run psql)
+- Spring Boot (installed with Gradle)
 
 
 ## Important Notes
@@ -38,7 +39,7 @@ ALTER SCHEMA public OWNER TO admin;
 
 ### 3. Build & Run (Gradle Wrapper)
 
-**Always run from backend/ (where ```build.gradle``` lives)**
+**Always run from `backend/` (where ```build.gradle``` lives)**
 ```bash
 
 # shows Gradle + JVM versions
@@ -46,19 +47,14 @@ ALTER SCHEMA public OWNER TO admin;
 .\gradlew.bat -v        # Windows
 
 # compile & run 
-./gradlew run            # macOS/Linux
-.\gradlew.bat run        # Windows
+./gradlew run | bootRun            # macOS/Linux
+.\gradlew.bat run | bootRun        # Windows
 
+# 
+'gradlew bootrun' is a specialized Gradle task provided by Spring Boot Gradle plugin
 ```
 
 
-Typical dev loop
-```bash
-# edit code…
-./gradlew run          # compiles changed files and runs Main
-# or to verify everything and produce JAR:
-./gradlew clean build
-```
 
 ### 4. Testing Code
   Open multiple terminals, preferrably one with the database and another for running Main.java.
