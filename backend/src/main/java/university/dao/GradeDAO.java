@@ -25,60 +25,91 @@ public class GradeDAO {
         jdbc.execute(sql);
     }
 
-    // public int insert(Grade grade) throws Exception{
+    public int insert(Grade grade) throws Exception{
+        String sql = """
+                    INSERT INTO grades(enrollmentID, grade) 
+                    VALUES(?,?) 
+                    RETURNING gradeID
+                    """;
 
-    //     String sql = "INSERT INTO grades(enrollmentID, grade) VALUES(?,?) RETURNING gradeID";
-    //     try(PreparedStatement ps = conn.prepareStatement(sql)){
-    //         ps.setInt(1, grade.getEnrollmentID());
-    //         ps.setString(2, grade.getGrade());
+        Integer id = jdbc.queryForObject(
+            sql,
+            Integer.class,
+            grade.getEnrollmentID(),
+            grade.getGrade()
+        );
+        if (id == null){
+            throw new SQLException("INSERT failed, no ID obtained.");
+        }
+        grade.setGradeID(id);
+        return id;
+    }
 
-    //         try (ResultSet rs = ps.executeQuery()){
-    //             if(rs.next()){
-    //                 int generatedID = rs.getInt(1);
-    //                 grade.setGradeID(generatedID);
-    //                 return generatedID;
-    //             }else{
-    //                 throw new SQLException("INSERT failed, no ID obtained.");
-    //             }
-    //         }
-    //     }
-    // }
+    public Grade findByID(int gradeID) throws Exception {
+        String sql = """
+                    SELECT gradeID, enrollmentID, grade 
+                    FROM grades 
+                    WHERE gradeID = ?
+                    """;
 
-    // public Grade findByID(int gradeID) throws Exception {
-    //     String sql = "SELECT gradeID, enrollmentID, grade FROM grades WHERE gradeID = ?";
-    //     try (PreparedStatement ps = conn.prepareStatement(sql)){
-    //         ps.setInt(1, gradeID);
+        try {
+            return jdbc.queryForObject(
+                sql,
+                (rs, rowNum) -> new Grade(
+                    rs.getInt("gradeID"),
+                    rs.getInt("enrollmentID"),
+                    rs.getString("grade")
+                ),
+                gradeID
+            );
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    //         try (ResultSet rs = ps.executeQuery()){
-    //             if(rs.next()){
-    //                 return new Grade(
-    //                     rs.getInt("gradeID"),
-    //                     rs.getInt("enrollmentID"),
-    //                     rs.getString("grade")
-    //                 );
-    //             }
-    //             else{
-    //                 throw new SQLException("No grade found with ID: " + gradeID);
-    //             }
-    //         }
-    //     }
-    // }
+    public int update(Grade grade) throws Exception{
+        String sql = """
+                    UPDATE grades 
+                    SET enrollmentID = ?, grade = ? 
+                    WHERE gradeID = ? 
+                    RETURNING gradeID
+                    """;
 
-    // public int update(Grade grade) throws Exception{
-    //     String sql = "UPDATE grades SET enrollmentID = ?, grade = ? WHERE gradeID = ? RETURNING gradeID";
-    //     try(PreparedStatement ps = conn.prepareStatement(sql)){
-    //         ps.setInt(1, grade.getEnrollmentID());
-    //         ps.setString(2, grade.getGrade());
-    //         ps.setInt(3, grade.getGradeID());
+        Integer id = jdbc.queryForObject(
+            sql,
+            Integer.class,
+            grade.getEnrollmentID(),
+            grade.getGrade(),
+            grade.getGradeID()
+        );
+        
+        if (id == null){
+            throw new SQLException("UPDATE failed, no ID obtained.");
+        }
+        return id;
+    }
 
-    //         try (ResultSet rs = ps.executeQuery()){
-    //             if(rs.next()){
-    //                 return rs.getInt(1);
-    //             }else{
-    //                 throw new SQLException("UPDATE failed, no ID obtained.");
-    //             }
-    //         }
-    //     }
-    // }
+    public List<Grade> findAll() throws SQLException {
+        String sql = "SELECT gradeID, enrollmentID, grade FROM grades ORDER BY gradeID";
+        
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Grade(
+                rs.getInt("gradeID"),
+                rs.getInt("enrollmentID"),
+                rs.getString("grade")
+            )
+        );
+    }
+
+    public void delete(int gradeID) throws SQLException {
+        String sql = "DELETE FROM grades WHERE gradeID = ?";
+        
+        int rowsAffected = jdbc.update(sql, gradeID);
+        if (rowsAffected == 0) {
+            throw new SQLException("Delete failed, no grade with ID: " + gradeID);
+        }
+    }
 
 }

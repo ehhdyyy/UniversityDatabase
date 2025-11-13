@@ -100,4 +100,27 @@ public class StudentDAO {
         student.setStudentID(id);
         return id;
     }
+
+    public List<Student> findAll() throws SQLException {
+        String sql = "SELECT studentID, lastName, firstName, major FROM students ORDER BY studentID";
+        
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Student(
+                rs.getInt("studentID"),
+                rs.getString("lastName"),
+                rs.getString("firstName"),
+                rs.getString("major")
+            )
+        );
+    }
+
+    public void delete(int studentID) throws SQLException {
+        String sql = "DELETE FROM students WHERE studentID = ?";
+        
+        int rowsAffected = jdbc.update(sql, studentID);
+        if (rowsAffected == 0) {
+            throw new SQLException("Delete failed, no student with ID: " + studentID);
+        }
+    }
 }

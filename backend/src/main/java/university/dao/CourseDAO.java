@@ -26,60 +26,90 @@ public class CourseDAO {
         jdbc.execute(sql);
     }
 
-    // public int insert(Course course) throws Exception{
-    //     String sql = "INSERT INTO courses(courseName, description) VALUES(?,?) RETURNING courseID";
-    //     try(PreparedStatement ps = conn.prepareStatement(sql)){
-    //         ps.setString(1, course.getCourseName());
-    //         ps.setString(2, course.getDescription());
+    public int insert(Course course) throws Exception{
+        String sql = """
+                    INSERT INTO courses(courseName, description) 
+                    VALUES(?,?) 
+                    RETURNING courseID
+                    """;
 
-    //         try (ResultSet rs = ps.executeQuery()){
-    //             if(rs.next()){
-    //                 int generatedID = rs.getInt(1);
-    //                 course.setCourseID(generatedID);
-    //                 System.out.println("Course ID set to: " + generatedID);
-    //                 return generatedID;
-    //             }else{
-    //                 throw new SQLException("INSERT failed, no ID obtained.");
-    //             }
-    //         }
-    //     }
-    // }
+        Integer id = jdbc.queryForObject(
+            sql,
+            Integer.class,
+            course.getCourseName(),
+            course.getDescription()
+        );
+        if (id == null){
+            throw new SQLException("INSERT failed, no ID obtained.");
+        }
+        course.setCourseID(id);
+        return id;
+    }
 
-    // public Course findByID(int courseID) throws Exception {
-    //     String sql = "SELECT courseID, courseName, description FROM courses WHERE courseID = ?";
-    //     try (PreparedStatement ps = conn.prepareStatement(sql)) {
+    public Course findByID(int courseID) throws Exception {
+        String sql = """
+                    SELECT courseID, courseName, description 
+                    FROM courses 
+                    WHERE courseID = ?
+                    """;
 
-    //         ps.setInt(1, courseID);
+        try {
+            return jdbc.queryForObject(
+                sql,
+                (rs, rowNum) -> new Course(
+                    rs.getInt("courseID"),
+                    rs.getString("courseName"),
+                    rs.getString("description")
+                ),
+                courseID
+            );
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    //         try (ResultSet rs = ps.executeQuery()) {
-    //             if(rs.next()) {
-    //                 return new Course(
-    //                     rs.getInt("courseID"),
-    //                     rs.getString("courseName"),
-    //                     rs.getString("description")
-    //                 );
-    //             }
-    //             else{
-    //                 throw new SQLException("No course found with ID: " + courseID);
-    //             }
-    //         }
-    //     }
-    // }
+    public List<Course> findAll() throws SQLException {
+        String sql = "SELECT courseID, courseName, description FROM courses ORDER BY courseID";
+        
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Course(
+                rs.getInt("courseID"),
+                rs.getString("courseName"),
+                rs.getString("description")
+            )
+        );
+    }
 
-    // public int update(Course course) throws Exception{
-    //     String sql = "UPDATE courses SET courseName = ?, description = ? WHERE courseID = ? RETURNING courseID";
-    //     try(PreparedStatement ps = conn.prepareStatement(sql)){
-    //         ps.setString(1, course.getCourseName());
-    //         ps.setString(2, course.getDescription());
-    //         ps.setInt(3, course.getCourseID());
+    public void delete(int courseID) throws SQLException {
+        String sql = "DELETE FROM courses WHERE courseID = ?";
+        
+        int rowsAffected = jdbc.update(sql, courseID);
+        if (rowsAffected == 0) {
+            throw new SQLException("Delete failed, no course with ID: " + courseID);
+        }
+    }
 
-    //         try (ResultSet rs = ps.executeQuery()){
-    //             if(rs.next()){
-    //                 return rs.getInt(1);
-    //             }else{
-    //                 throw new SQLException("UPDATE failed, no ID obtained.");
-    //             }
-    //         }
-    //     }
-    // }
+    public int update(Course course) throws Exception{
+        String sql = """
+                    UPDATE courses 
+                    SET courseName = ?, description = ? 
+                    WHERE courseID = ? 
+                    RETURNING courseID
+                    """;
+
+        Integer id = jdbc.queryForObject(
+            sql,
+            Integer.class,
+            course.getCourseName(),
+            course.getDescription(),
+            course.getCourseID()
+        );
+        
+        if (id == null){
+            throw new SQLException("UPDATE failed, no ID obtained.");
+        }
+        return id;
+    }
 }

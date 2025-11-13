@@ -93,4 +93,26 @@ public class EnrollmentDAO {
         enrollment.setEnrollmentID(id);
         return id;
     }
+
+    public List<Enrollment> findAll() throws SQLException {
+        String sql = "SELECT enrollmentID, studentID, sectionID FROM enrollments ORDER BY enrollmentID";
+        
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Enrollment(
+                rs.getInt("enrollmentID"),
+                rs.getInt("studentID"),
+                rs.getInt("sectionID")
+            )
+        );
+    }
+
+    public void delete(int enrollmentID) throws SQLException {
+        String sql = "DELETE FROM enrollments WHERE enrollmentID = ?";
+        
+        int rowsAffected = jdbc.update(sql, enrollmentID);
+        if (rowsAffected == 0) {
+            throw new SQLException("Delete failed, no enrollment with ID: " + enrollmentID);
+        }
+    }
 }
