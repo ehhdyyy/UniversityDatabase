@@ -16,13 +16,48 @@ public class GradeDAO {
 
     public void createTable() throws SQLException {
         String sql = """
-                CREATE TABLE IF NOT EXISTS grades(
+                DROP TABLE IF EXISTS grades CASCADE;
+                CREATE TABLE grades(
                     gradeID SERIAL PRIMARY KEY,
                     enrollmentID INT NOT NULL REFERENCES enrollments(enrollmentID) ON DELETE CASCADE,
                     grade VARCHAR(2) NOT NULL
                 );
                 """;
         jdbc.execute(sql);
+    }
+
+    public void populateGrades() throws SQLException {
+        String sql = """
+                INSERT INTO grades(enrollmentID, grade) VALUES
+                    (1, 'A'),
+                    (2, 'B+'),
+                    (3, 'A-'),
+                    (4, 'C'),
+                    (5, 'B'),
+                    (6, 'A'),
+                    (7, 'B-'),
+                    (8, 'C+'),
+                    (9, 'A'),
+                    (10, 'B'),
+                    (11, 'A-'),
+                    (12, 'C'),
+                    (13, 'B+'),
+                    (14, 'A'),
+                    (15, 'B-')
+                    ;
+                """;
+        jdbc.execute(sql);
+    }
+
+    public List<String> findAllGrades(){
+        return jdbc.query("""
+            SELECT g.gradeID, g.enrollmentID, g.grade, s.lastName, s.firstName
+            FROM grades g 
+            JOIN enrollments e ON g.enrollmentID = e.enrollmentID 
+            JOIN students s ON e.studentID = s.studentID
+            ORDER BY gradeID
+            """
+        , (rs, rowNum) -> rs.getString("gradeID") + " " + rs.getString("enrollmentID") + " " + rs.getString("grade") + " " + rs.getString("lastName") + " " + rs.getString("firstName"));
     }
 
     public int insert(Grade grade) throws Exception{

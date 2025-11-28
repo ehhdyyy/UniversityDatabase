@@ -36,9 +36,12 @@ public class DatabaseInitializer implements CommandLineRunner {
             gradeDAO.createTable();
             sectionDAO.createTable();
             studentDAO.createTable();
-
-          
-
+            
+            studentDAO.populateStudents();
+            courseDAO.populateCourses();
+            sectionDAO.populateSections();
+            enrollmentDAO.populateEnrollments();
+            gradeDAO.populateGrades();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,14 +16,41 @@ public class CourseDAO {
     
     public void createTable() throws Exception{
         String sql = """
-                CREATE TABLE IF NOT EXISTS courses(
+                DROP TABLE IF EXISTS courses CASCADE;
+                CREATE TABLE courses(
                     courseID SERIAL PRIMARY KEY,
                     courseName VARCHAR(100) NOT NULL,
                     description TEXT NOT NULL
                 );
                 """;
-        
         jdbc.execute(sql);
+    }
+
+    public void populateCourses() throws Exception{
+        String sql = """
+                INSERT INTO courses(courseName, description) VALUES
+                    ('Data Science 101', 'Introduction to Data Science concepts and techniques.'),
+                    ('Advanced Algorithms', 'In-depth study of algorithms and data structures.'),
+                    ('Database Systems', 'Comprehensive overview of database design and management.'),
+                    ('Operating Systems', 'Study of operating system principles and design.'),
+                    ('Computer Networks', 'Introduction to computer networking concepts and protocols.'),
+                    ('Chemistry Basics', 'Fundamental concepts in Chemistry for beginners.'),
+                    ('Physics I', 'Introduction to classical mechanics and thermodynamics.'),
+                    ('Calculus I', 'Differential and integral calculus of single-variable functions.'),
+                    ('Introduction to Psychology', 'Overview of psychological theories and practices.'),
+                    ('World History', 'Survey of major events in world history from ancient to modern times.'),
+                    ('Creative Writing', 'Exploration of various forms of creative writing.'),
+                    ('Microeconomics', 'Study of individual economic agents and markets.'),
+                    ('Macroeconomics', 'Examination of economy-wide phenomena and policies.'),
+                    ('Art History', 'Analysis of art movements and their historical contexts.'),
+                    ('Philosophy 101', 'Introduction to fundamental philosophical questions and thinkers.')
+                    ;
+                """;
+        jdbc.execute(sql);
+    }
+
+    public List<String> findAllCourses(){
+        return jdbc.query("SELECT courseID, courseName, description FROM courses ORDER BY courseID", (rs, rowNum) -> rs.getString("courseID") + " " + rs.getString("courseName") + " " + rs.getString("description"));
     }
 
     public int insert(Course course) throws Exception{

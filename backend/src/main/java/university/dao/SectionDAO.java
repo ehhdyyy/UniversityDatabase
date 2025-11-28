@@ -16,7 +16,8 @@ public class SectionDAO {
 
     public void createTable() throws SQLException {
         String sql = """
-                CREATE TABLE IF NOT EXISTS sections(
+                DROP TABLE IF EXISTS sections CASCADE;
+                CREATE TABLE sections(
                     sectionID SERIAL PRIMARY KEY,
                     courseID INT NOT NULL REFERENCES courses(courseID) ON DELETE CASCADE,
                     day_time VARCHAR(50) NOT NULL,
@@ -24,6 +25,40 @@ public class SectionDAO {
                 );
                 """;
         jdbc.execute(sql);
+    }
+
+    public void populateSections() throws SQLException {
+        String sql = """
+                INSERT INTO sections(courseID, day_time, term) VALUES
+                    (1, 'Mon-Wed 10:00-11:30', 'Fall 2024'),
+                    (2, 'Tue-Thu 12:00-13:30', 'Fall 2024'),
+                    (3, 'Mon-Wed 14:00-15:30', 'Spring 2025'),
+                    (4, 'Tue-Thu 09:00-10:30', 'Spring 2025'),
+                    (5, 'Mon-Wed 11:00-12:30', 'Fall 2024'),
+                    (6, 'Tue-Thu 13:00-14:30', 'Fall 2024'),
+                    (7, 'Mon-Wed 15:00-16:30', 'Spring 2025'),
+                    (8, 'Tue-Thu 10:00-11:30', 'Spring 2025'),
+                    (9, 'Mon-Wed 08:00-09:30', 'Fall 2024'),
+                    (10, 'Tue-Thu 15:00-16:30', 'Fall 2024'),
+                    (11, 'Mon-Wed 12:00-13:30', 'Spring 2025'),
+                    (12, 'Tue-Thu 14:00-15:30', 'Spring 2025'),
+                    (13, 'Mon-Wed 09:00-10:30', 'Fall 2024'),
+                    (14, 'Tue-Thu 11:00-12:30', 'Fall 2024'),
+                    (15, 'Mon-Wed 16:00-17:30', 'Spring 2025')
+                    ;
+                """;
+        jdbc.execute(sql);
+    }
+
+    public List<String> findAllSections() {
+        return jdbc.query("""
+                    SELECT sec.sectionID, sec.courseID, c.courseName, sec.day_time, sec.term
+                    FROM sections sec
+                    JOIN courses c ON sec.courseID = c.courseID
+                    ORDER BY sec.sectionID;
+                """
+                        
+                , (rs, rowNum) -> rs.getString("sectionID") + " " + rs.getString("courseID") + " " + rs.getString("courseName") + " " + rs.getString("day_time") + " " + rs.getString("term"));
     }
 
     public int insert(Section section) throws Exception{

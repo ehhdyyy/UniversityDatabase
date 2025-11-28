@@ -9,6 +9,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("message", "Welcome to our University Management System!");
+        model.addAttribute("info", "Use the navigation menu to explore the application.");
         return "index";
     }
 }

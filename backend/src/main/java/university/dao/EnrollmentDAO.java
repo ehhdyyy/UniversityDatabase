@@ -16,14 +16,55 @@ public class EnrollmentDAO {
 
     public void createTable() throws SQLException {
         String sql = """
-                CREATE TABLE IF NOT EXISTS enrollments(
+                DROP TABLE IF EXISTS enrollments CASCADE;
+                CREATE TABLE enrollments(
                     enrollmentID SERIAL PRIMARY KEY,
                     studentID INT NOT NULL REFERENCES students(studentID) ON DELETE CASCADE,
                     sectionID INT NOT NULL REFERENCES sections(sectionID) ON DELETE CASCADE,
                     UNIQUE(studentID, sectionID)
                 );
+
                 """;
         jdbc.execute(sql);
+    }
+
+    public void populateEnrollments() throws SQLException {
+        String sql = """
+                INSERT INTO enrollments(studentID, sectionID) VALUES
+                    (1, 1),
+                    (2, 1),
+                    (3, 2),
+                    (4, 2),
+                    (5, 3),
+                    (6, 3),
+                    (7, 4),
+                    (8, 4),
+                    (9, 5),
+                    (10, 5),
+                    (11, 6),
+                    (12, 6),
+                    (13, 7),
+                    (14, 7),
+                    (15, 8)
+                    ;
+                """;
+        jdbc.execute(sql);
+    }
+
+    public List<String> findAllEnrollments() {
+        return jdbc.query("""
+                SELECT e.enrollmentID, e.studentID, s.lastName, s.firstName, e.sectionID, c.courseName, sec.day_time, sec.term
+                FROM enrollments e
+                JOIN students s ON e.studentID = s.studentID 
+                JOIN sections sec ON e.sectionID = sec.sectionID
+                JOIN courses c ON sec.courseID = c.courseID
+                ORDER BY e.enrollmentID;
+
+            """        
+            , (rs, rowNum) -> rs.getString("enrollmentID") + " " + rs.getString("studentID") + " " + 
+                              rs.getString("lastName") + ", " + rs.getString("firstName") + " - " + 
+                              rs.getString("sectionID") + " " + rs.getString("courseName") + " (" + 
+                              rs.getString("day_time") + ", " + rs.getString("term") + ")");
     }
 
     public int insert(Enrollment enrollment) throws Exception{

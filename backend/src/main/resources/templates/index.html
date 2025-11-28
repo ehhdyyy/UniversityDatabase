@@ -3,9 +3,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>University Home</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
     </head>
     <body>
         <h1 th:text="${message}">Welcome!</h1>
-        <p><a href="/students">View Students</a></p>
+        <p th:text="${info}"></p>
+        <p><a th:href="@{/students}" class="btn">View Students</a></p>
+        <p><a th:href="@{/courses}" class="btn">View Courses</a></p>
+        <p><a th:href="@{/grades}" class="btn">View Grades</a></p>
+        <p><a th:href="@{/sections}" class="btn">View Sections</a></p>
+        <p><a th:href="@{/enrollments}" class="btn">View Enrollments</a></p>
     </body>
 </html>

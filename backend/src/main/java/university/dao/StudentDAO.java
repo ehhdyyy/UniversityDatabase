@@ -16,12 +16,36 @@ public class StudentDAO {
 
     public void createTable() throws SQLException {
         String sql = """
-                CREATE TABLE IF NOT EXISTS students(
+                DROP TABLE IF EXISTS students CASCADE;
+                CREATE TABLE students(
                     studentID SERIAL PRIMARY KEY,
                     lastName VARCHAR(50) NOT NULL,
                     firstName VARCHAR(50) NOT NULL,
                     major VARCHAR(50) NOT NULL
                 );
+                """;
+        jdbc.execute(sql);
+    }
+
+    public void populateStudents() throws SQLException {
+        String sql = """
+                INSERT INTO students(lastName, firstName, major) VALUES
+                    ('Yan', 'Jason', 'Data Science'),
+                    ('Sabharwal', 'Kabir', 'Data Science'),
+                    ('Pan', 'Edmond', 'Computer Science'),
+                    ('Smith', 'John', 'Mathematics'),
+                    ('Doe', 'Jane', 'Physics'),
+                    ('Brown', 'Charlie', 'Chemistry'),
+                    ('Johnson', 'Emily', 'Biology'),
+                    ('Davis', 'Michael', 'Engineering'),
+                    ('Miller', 'Sarah', 'Economics'),
+                    ('Wilson', 'David', 'History'),
+                    ('Moore', 'Laura', 'Philosophy'),
+                    ('Taylor', 'Daniel', 'Sociology'),
+                    ('Anderson', 'Olivia', 'Psychology'),
+                    ('Thomas', 'James', 'Political Science'),
+                    ('Jackson', 'Sophia', 'Art History')
+                    ;
                 """;
         jdbc.execute(sql);
     }
