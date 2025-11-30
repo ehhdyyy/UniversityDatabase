@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org">
-  
-<head><title>Grades</title></head>
-  <body>
-    <h1>Grades List</h1>
-    <ul>
-      <li th:each="name : ${grades}" th:text="${name}"></li>
-    </ul>
-  </body>
-  <footer>
-      <p><a href="/">Back to Home</a></p>
-  </footer>
+<head>
+    <title>Grades - University Database</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Grades List</h1>
+        <p>All student grades and performance</p>
+        
+        <ul>
+            <li th:each="name : ${grades}" th:text="${name}"></li>
+        </ul>
+        
+        <p class="data-count" th:text="'Total Grades: ' + ${grades.size()}"></p>
+        
+        <footer>
+            <a href="/">← Back to Home</a>
+        </footer>
+    </div>
+</body>
 </html>

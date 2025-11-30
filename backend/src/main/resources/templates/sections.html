@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org">
-  
-<head><title>Sections</title></head>
-  <body>
-    <h1>Sections List</h1>
-    <ul>
-      <li th:each="name : ${sections}" th:text="${name}"></li>
-    </ul>
-  </body>
-  <footer>
-      <p><a href="/">Back to Home</a></p>
-  </footer>
+<head>
+    <title>Sections - University Database</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>🏫 Sections List</h1>
+        <p>All course sections with schedules</p>
+        
+        <ul>
+            <li th:each="name : ${sections}" th:text="${name}"></li>
+        </ul>
+        
+        <p class="data-count" th:text="'Total Sections: ' + ${sections.size()}"></p>
+        
+        <footer>
+            <a href="/">← Back to Home</a>
+        </footer>
+    </div>
+</body>
 </html>
