@@ -10,9 +10,24 @@
         <h1>🎓 Grades List</h1>
         <p>All student grades and performance</p>
         
-        <ul>
-            <li th:each="name : ${grades}" th:text="${name}"></li>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Grade ID</th>
+                    <th>Enrollment ID</th>
+                    <th>Grade</th>
+                    <th>Student Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="grade : ${grades}">
+                    <td th:text="${#strings.arraySplit(grade, ' ')[0]}"></td>
+                    <td th:text="${#strings.arraySplit(grade, ' ')[1]}"></td>
+                    <td th:text="${#strings.arraySplit(grade, ' ')[2]}"></td>
+                    <td th:text="${#strings.arraySplit(grade, ' ')[3] + ' ' + #strings.arraySplit(grade, ' ')[4]}"></td>
+                </tr>
+            </tbody>
+        </table>
         
         <p class="data-count" th:text="'Total Grades: ' + ${grades.size()}"></p>
         

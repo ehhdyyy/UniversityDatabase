@@ -10,9 +10,26 @@
         <h1>📝 Enrollments List</h1>
         <p>All student enrollments in sections</p>
         
-        <ul>
-            <li th:each="name : ${enrollments}" th:text="${name}"></li>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Enrollment ID</th>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Section ID</th>
+                    <th>Course Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="enrollment : ${enrollments}">
+                    <td th:text="${#strings.substringBefore(enrollment, ' ')}"></td>
+                    <td th:text="${#strings.substringBefore(#strings.substringAfter(enrollment, ' '), ' ')}"></td>
+                    <td th:text="${#strings.substringBefore(#strings.substringAfter(#strings.substringAfter(enrollment, ' '), ' '), ' - ')}"></td>
+                    <td th:text="${#strings.substringBefore(#strings.substringAfter(enrollment, ' - '), ' ')}"></td>
+                    <td th:text="${#strings.substringAfter(#strings.substringAfter(enrollment, ' - '), ' ')}"></td>
+                </tr>
+            </tbody>
+        </table>
         
         <p class="data-count" th:text="'Total Enrollments: ' + ${enrollments.size()}"></p>
         

@@ -10,9 +10,22 @@
         <h1>📚 Courses List</h1>
         <p>All available courses in the system</p>
         
-        <ul>
-            <li th:each="name : ${courses}" th:text="${name}"></li>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="course : ${courses}">
+                    <td th:text="${#strings.substringBefore(course, ' ')}"></td>
+                    <td th:text="${#strings.substringBefore(#strings.substringAfter(course, ' '), ' ')}"></td>
+                    <td th:text="${#strings.substringAfter(#strings.substringAfter(course, ' '), ' ')}"></td>
+                </tr>
+            </tbody>
+        </table>
         
         <p class="data-count" th:text="'Total Courses: ' + ${courses.size()}"></p>
         

@@ -10,9 +10,22 @@
         <h1>👨‍🎓 Student List</h1>
         <p>All registered students in the system</p>
         
-        <ul>
-            <li th:each="name : ${students}" th:text="${name}"></li>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${#strings.substringBefore(student, ' ')}"></td>
+                    <td th:text="${#strings.substringBefore(#strings.substringAfter(student, ' '), ' ')}"></td>
+                    <td th:text="${#strings.substringAfter(#strings.substringAfter(student, ' '), ' ')}"></td>
+                </tr>
+            </tbody>
+        </table>
         
         <p class="data-count" th:text="'Total Students: ' + ${students.size()}"></p>
         

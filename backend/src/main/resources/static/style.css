@@ -88,6 +88,49 @@ li:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 30px 0;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+thead {
+    background: linear-gradient(135deg, #bae6fd 0%, #dbeafe 100%);
+}
+
+th {
+    padding: 18px 25px;
+    text-align: left;
+    font-weight: 600;
+    color: #0c4a6e;
+    font-size: 1.05em;
+    border-bottom: 2px solid #7dd3fc;
+}
+
+td {
+    padding: 18px 25px;
+    color: #334155;
+    font-size: 1.05em;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+tbody tr {
+    transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+    background: #f0f9ff;
+    transform: translateX(5px);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
 footer {
     margin-top: 50px;
     padding-top: 30px;
