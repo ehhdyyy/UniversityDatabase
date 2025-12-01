@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: content-box;
 }
 
 body {
@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     background: white;
     border-radius: 20px;
@@ -43,6 +43,94 @@ p {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.crud-controls {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    align-items: flex-end;
+}
+
+.filter-form div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 220px;
+}
+
+.form-group{
+    margin-bottom: 15px;
+}
+
+.form-container div {
+    display: flex;
+    flex-direction:column;
+    margin-bottom: 15px;
+}
+
+.filter-form label, .form-group label{
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.filter-form input, select, .form-group input{
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5f5;
+    font-size: 0.9rem;
+    color: #0f172a;
+}
+
+.btn-add, .btn-filter, .btn-reset, .btn-edit, .btn-delete, .btn-submit, .btn-cancel{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid;
+    cursor: pointer;
+
+    border-color:#0f172a;
+
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.btn-add{
+    background: #74ee22;
+    color: rgb(0, 0, 0);
+}
+
+.btn-edit, .btn-submit{
+    background: #fbbf24;
+    color: rgb(0, 0, 0);
+}
+
+.btn-delete, .btn-cancel{
+    background: #f87171;
+    color: rgb(0, 0, 0);
+}
+
+.btn-reset, .btn-filter{
+    background: #e2e8f0;
+    color: #0f172a;
 }
 
 a.btn {
