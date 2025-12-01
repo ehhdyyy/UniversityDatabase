@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${student.studentID == 0 ? 'Add Student' : 'Edit Student'}">Student Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${student.studentID == 0 ? '➕ Add New Student' : '✏️ Edit Student'}">Student Form</h1>
+        
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        
+        <div class="form-container">
+            <form th:action="@{${student.studentID == 0 ? '/students/add' : '/students/edit/' + student.studentID}}" 
+                  method="post" th:object="${student}">
+                
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" th:value="*{firstName}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" th:value="*{lastName}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="major">Major:</label>
+                    <input type="text" id="major" name="major" th:value="*{major}" required>
+                </div>
+                
+                <button type="submit" class="btn-submit" 
+                        th:text="${student.studentID == 0 ? 'Add Student' : 'Update Student'}">Submit</button>
+                <a href="/students" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+        
+        <footer>
+            <a href="/students">← Back to Students</a>
+        </footer>
+    </div>
+</body>
+</html>

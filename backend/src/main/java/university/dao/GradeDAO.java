@@ -49,17 +49,6 @@ public class GradeDAO {
         jdbc.execute(sql);
     }
 
-    public List<String> findAllGrades(){
-        return jdbc.query("""
-            SELECT g.gradeID, g.enrollmentID, g.grade, s.lastName, s.firstName
-            FROM grades g 
-            JOIN enrollments e ON g.enrollmentID = e.enrollmentID 
-            JOIN students s ON e.studentID = s.studentID
-            ORDER BY gradeID
-            """
-        , (rs, rowNum) -> rs.getString("gradeID") + " " + rs.getString("enrollmentID") + " " + rs.getString("grade") + " " + rs.getString("lastName") + " " + rs.getString("firstName"));
-    }
-
     public int insert(Grade grade) throws Exception{
         String sql = """
                     INSERT INTO grades(enrollmentID, grade) 
@@ -147,4 +136,69 @@ public class GradeDAO {
         }
     }
 
+    public List<Grade> findAllWithDetails() throws SQLException {
+        String sql = """
+                SELECT g.gradeID, g.enrollmentID, g.grade,
+                       s.firstName || ' ' || s.lastName as studentName
+                FROM grades g
+                JOIN enrollments e ON g.enrollmentID = e.enrollmentID
+                JOIN students s ON e.studentID = s.studentID
+                ORDER BY g.gradeID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Grade grade = new Grade(
+                rs.getInt("gradeID"),
+                rs.getInt("enrollmentID"),
+                rs.getString("grade")
+            );
+            grade.setStudentName(rs.getString("studentName"));
+            return grade;
+        });
+    }
+
+    public List<Grade> filterByStudentName(String searchTerm) throws SQLException {
+        String sql = """
+                SELECT g.gradeID, g.enrollmentID, g.grade,
+                       s.firstName || ' ' || s.lastName as studentName
+                FROM grades g
+                JOIN enrollments e ON g.enrollmentID = e.enrollmentID
+                JOIN students s ON e.studentID = s.studentID
+                WHERE LOWER(s.firstName || ' ' || s.lastName) LIKE LOWER(?)
+                ORDER BY g.gradeID
+                """;
+        
+        String pattern = "%" + searchTerm + "%";
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Grade grade = new Grade(
+                rs.getInt("gradeID"),
+                rs.getInt("enrollmentID"),
+                rs.getString("grade")
+            );
+            grade.setStudentName(rs.getString("studentName"));
+            return grade;
+        }, pattern);
+    }
+
+    public List<Grade> filterByGrade(String gradeValue) throws SQLException {
+        String sql = """
+                SELECT g.gradeID, g.enrollmentID, g.grade,
+                       s.firstName || ' ' || s.lastName as studentName
+                FROM grades g
+                JOIN enrollments e ON g.enrollmentID = e.enrollmentID
+                JOIN students s ON e.studentID = s.studentID
+                WHERE g.grade = ?
+                ORDER BY g.gradeID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Grade grade = new Grade(
+                rs.getInt("gradeID"),
+                rs.getInt("enrollmentID"),
+                rs.getString("grade")
+            );
+            grade.setStudentName(rs.getString("studentName"));
+            return grade;
+        }, gradeValue);
+    }
 }

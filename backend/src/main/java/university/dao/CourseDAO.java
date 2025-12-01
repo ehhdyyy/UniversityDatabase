@@ -49,10 +49,6 @@ public class CourseDAO {
         jdbc.execute(sql);
     }
 
-    public List<String> findAllCourses(){
-        return jdbc.query("SELECT courseID, courseName, description FROM courses ORDER BY courseID", (rs, rowNum) -> rs.getString("courseID") + " " + rs.getString("courseName") + " " + rs.getString("description"));
-    }
-
     public int insert(Course course) throws Exception{
         String sql = """
                     INSERT INTO courses(courseName, description) 
@@ -138,5 +134,25 @@ public class CourseDAO {
             throw new SQLException("UPDATE failed, no ID obtained.");
         }
         return id;
+    }
+
+    public List<Course> searchCourses(String searchTerm) throws SQLException {
+        String sql = """
+                SELECT courseID, courseName, description 
+                FROM courses 
+                WHERE LOWER(courseName) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)
+                ORDER BY courseID
+                """;
+        
+        String pattern = "%" + searchTerm + "%";
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Course(
+                rs.getInt("courseID"),
+                rs.getString("courseName"),
+                rs.getString("description")
+            ),
+            pattern, pattern
+        );
     }
 }

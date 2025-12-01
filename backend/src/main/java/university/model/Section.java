@@ -6,6 +6,7 @@ public class Section {
     private int courseID;
     private String dayTime;
     private String term;
+    private String courseName; // For display purposes
 
     public Section() {}
 
@@ -53,5 +54,12 @@ public class Section {
     public void setTerm(String term) {
         this.term = term;
     }
-    
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
 }

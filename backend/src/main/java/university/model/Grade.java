@@ -5,6 +5,7 @@ public class Grade {
     private int gradeID;
     private int enrollmentID;
     private String grade;
+    private String studentName; // For display
 
     public Grade() {}
 
@@ -42,5 +43,12 @@ public class Grade {
     public void setGrade(String grade) {
         this.grade = grade;
     }
-    
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 }

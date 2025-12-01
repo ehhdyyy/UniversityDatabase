@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${enrollment.enrollmentID == 0 ? 'Add Enrollment' : 'Edit Enrollment'}">Enrollment Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${enrollment.enrollmentID == 0 ? '➕ Add New Enrollment' : '✏️ Edit Enrollment'}">Enrollment Form</h1>
+        
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        
+        <div class="form-container">
+            <form th:action="@{${enrollment.enrollmentID == 0 ? '/enrollments/add' : '/enrollments/edit/' + enrollment.enrollmentID}}" 
+                  method="post" th:object="${enrollment}">
+                
+                <div class="form-group">
+                    <label for="studentID">Student:</label>
+                    <select id="studentID" name="studentID" th:field="*{studentID}" required>
+                        <option value="">Select a student...</option>
+                        <option th:each="student : ${students}" 
+                                th:value="${student.studentID}" 
+                                th:text="${student.studentID + ' - ' + student.firstName + ' ' + student.lastName}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sectionID">Section:</label>
+                    <select id="sectionID" name="sectionID" th:field="*{sectionID}" required>
+                        <option value="">Select a section...</option>
+                        <option th:each="section : ${sections}" 
+                                th:value="${section.sectionID}" 
+                                th:text="${section.sectionID + ' - Course ' + section.courseID + ' (' + section.term + ')'}">
+                        </option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit" 
+                        th:text="${enrollment.enrollmentID == 0 ? 'Add Enrollment' : 'Update Enrollment'}">Submit</button>
+                <a href="/enrollments" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+        
+        <footer>
+            <a href="/enrollments">← Back to Enrollments</a>
+        </footer>
+    </div>
+</body>
+</html>

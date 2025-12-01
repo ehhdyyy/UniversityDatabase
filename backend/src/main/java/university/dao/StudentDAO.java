@@ -50,10 +50,6 @@ public class StudentDAO {
         jdbc.execute(sql);
     }
 
-    public List<String> findAllNames() {
-        return jdbc.query("SELECT studentID, lastname, firstname FROM students ORDER BY studentID", (rs, rowNum) -> rs.getString("studentID") + " " + rs.getString("lastName") + " " + rs.getString("firstName"));
-    }
-
     public int insert(Student student) throws Exception{
 
         String sql = """
@@ -119,7 +115,7 @@ public class StudentDAO {
         );
         
         if (id == null){
-            throw new SQLException("INSERT failed, no ID obtained.");
+            throw new SQLException("UPDATE failed, no ID obtained.");
         }
         student.setStudentID(id);
         return id;
@@ -146,5 +142,47 @@ public class StudentDAO {
         if (rowsAffected == 0) {
             throw new SQLException("Delete failed, no student with ID: " + studentID);
         }
+    }
+
+    public List<Student> searchByName(String searchTerm) throws SQLException {
+        String sql = """
+                SELECT studentID, lastName, firstName, major 
+                FROM students 
+                WHERE LOWER(firstName) LIKE LOWER(?) OR LOWER(lastName) LIKE LOWER(?)
+                ORDER BY studentID
+                """;
+        
+        String pattern = "%" + searchTerm + "%";
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Student(
+                rs.getInt("studentID"),
+                rs.getString("lastName"),
+                rs.getString("firstName"),
+                rs.getString("major")
+            ),
+            pattern, pattern
+        );
+    }
+
+    public List<Student> filterByMajor(String major) throws SQLException {
+        String sql = """
+                SELECT studentID, lastName, firstName, major 
+                FROM students 
+                WHERE LOWER(major) LIKE LOWER(?)
+                ORDER BY studentID
+                """;
+        
+        String pattern = "%" + major + "%";
+        return jdbc.query(
+            sql,
+            (rs, rowNum) -> new Student(
+                rs.getInt("studentID"),
+                rs.getString("lastName"),
+                rs.getString("firstName"),
+                rs.getString("major")
+            ),
+            pattern
+        );
     }
 }

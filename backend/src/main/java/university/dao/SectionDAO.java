@@ -50,17 +50,6 @@ public class SectionDAO {
         jdbc.execute(sql);
     }
 
-    public List<String> findAllSections() {
-        return jdbc.query("""
-                    SELECT sec.sectionID, sec.courseID, c.courseName, sec.day_time, sec.term
-                    FROM sections sec
-                    JOIN courses c ON sec.courseID = c.courseID
-                    ORDER BY sec.sectionID;
-                """
-                        
-                , (rs, rowNum) -> rs.getString("sectionID") + " " + rs.getString("courseID") + " " + rs.getString("courseName") + " " + rs.getString("day_time") + " " + rs.getString("term"));
-    }
-
     public int insert(Section section) throws Exception{
         String sql = """
                     INSERT INTO sections(courseID, day_time, term) 
@@ -152,4 +141,65 @@ public class SectionDAO {
         }
     }
 
+    public List<Section> findAllWithDetails() throws SQLException {
+        String sql = """
+                SELECT s.sectionID, s.courseID, c.courseName, s.day_time, s.term
+                FROM sections s
+                JOIN courses c ON s.courseID = c.courseID
+                ORDER BY s.sectionID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Section section = new Section(
+                rs.getInt("sectionID"),
+                rs.getInt("courseID"),
+                rs.getString("day_time"),
+                rs.getString("term")
+            );
+            section.setCourseName(rs.getString("courseName"));
+            return section;
+        });
+    }
+
+    public List<Section> filterByCourseId(int courseId) throws SQLException {
+        String sql = """
+                SELECT s.sectionID, s.courseID, c.courseName, s.day_time, s.term
+                FROM sections s
+                JOIN courses c ON s.courseID = c.courseID
+                WHERE s.courseID = ?
+                ORDER BY s.sectionID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Section section = new Section(
+                rs.getInt("sectionID"),
+                rs.getInt("courseID"),
+                rs.getString("day_time"),
+                rs.getString("term")
+            );
+            section.setCourseName(rs.getString("courseName"));
+            return section;
+        }, courseId);
+    }
+
+    public List<Section> filterByTerm(String term) throws SQLException {
+        String sql = """
+                SELECT s.sectionID, s.courseID, c.courseName, s.day_time, s.term
+                FROM sections s
+                JOIN courses c ON s.courseID = c.courseID
+                WHERE s.term = ?
+                ORDER BY s.sectionID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Section section = new Section(
+                rs.getInt("sectionID"),
+                rs.getInt("courseID"),
+                rs.getString("day_time"),
+                rs.getString("term")
+            );
+            section.setCourseName(rs.getString("courseName"));
+            return section;
+        }, term);
+    }
 }

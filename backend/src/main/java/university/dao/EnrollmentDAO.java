@@ -51,22 +51,6 @@ public class EnrollmentDAO {
         jdbc.execute(sql);
     }
 
-    public List<String> findAllEnrollments() {
-        return jdbc.query("""
-                SELECT e.enrollmentID, e.studentID, s.lastName, s.firstName, e.sectionID, c.courseName, sec.day_time, sec.term
-                FROM enrollments e
-                JOIN students s ON e.studentID = s.studentID 
-                JOIN sections sec ON e.sectionID = sec.sectionID
-                JOIN courses c ON sec.courseID = c.courseID
-                ORDER BY e.enrollmentID;
-
-            """        
-            , (rs, rowNum) -> rs.getString("enrollmentID") + " " + rs.getString("studentID") + " " + 
-                              rs.getString("lastName") + ", " + rs.getString("firstName") + " - " + 
-                              rs.getString("sectionID") + " " + rs.getString("courseName") + " (" + 
-                              rs.getString("day_time") + ", " + rs.getString("term") + ")");
-    }
-
     public int insert(Enrollment enrollment) throws Exception{
 
         String sql = """
@@ -155,5 +139,85 @@ public class EnrollmentDAO {
         if (rowsAffected == 0) {
             throw new SQLException("Delete failed, no enrollment with ID: " + enrollmentID);
         }
+    }
+
+    public List<Enrollment> findAllWithDetails() throws SQLException {
+        String sql = """
+                SELECT e.enrollmentID, e.studentID, e.sectionID,
+                       s.firstName || ' ' || s.lastName as studentName,
+                       c.courseName, sec.day_time, sec.term
+                FROM enrollments e
+                JOIN students s ON e.studentID = s.studentID
+                JOIN sections sec ON e.sectionID = sec.sectionID
+                JOIN courses c ON sec.courseID = c.courseID
+                ORDER BY e.enrollmentID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Enrollment enrollment = new Enrollment(
+                rs.getInt("enrollmentID"),
+                rs.getInt("studentID"),
+                rs.getInt("sectionID")
+            );
+            enrollment.setStudentName(rs.getString("studentName"));
+            enrollment.setCourseName(rs.getString("courseName"));
+            enrollment.setDayTime(rs.getString("day_time"));
+            enrollment.setTerm(rs.getString("term"));
+            return enrollment;
+        });
+    }
+
+    public List<Enrollment> filterByStudentId(int studentId) throws SQLException {
+        String sql = """
+                SELECT e.enrollmentID, e.studentID, e.sectionID,
+                       s.firstName || ' ' || s.lastName as studentName,
+                       c.courseName, sec.day_time, sec.term
+                FROM enrollments e
+                JOIN students s ON e.studentID = s.studentID
+                JOIN sections sec ON e.sectionID = sec.sectionID
+                JOIN courses c ON sec.courseID = c.courseID
+                WHERE e.studentID = ?
+                ORDER BY e.enrollmentID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Enrollment enrollment = new Enrollment(
+                rs.getInt("enrollmentID"),
+                rs.getInt("studentID"),
+                rs.getInt("sectionID")
+            );
+            enrollment.setStudentName(rs.getString("studentName"));
+            enrollment.setCourseName(rs.getString("courseName"));
+            enrollment.setDayTime(rs.getString("day_time"));
+            enrollment.setTerm(rs.getString("term"));
+            return enrollment;
+        }, studentId);
+    }
+
+    public List<Enrollment> filterBySectionId(int sectionId) throws SQLException {
+        String sql = """
+                SELECT e.enrollmentID, e.studentID, e.sectionID,
+                       s.firstName || ' ' || s.lastName as studentName,
+                       c.courseName, sec.day_time, sec.term
+                FROM enrollments e
+                JOIN students s ON e.studentID = s.studentID
+                JOIN sections sec ON e.sectionID = sec.sectionID
+                JOIN courses c ON sec.courseID = c.courseID
+                WHERE e.sectionID = ?
+                ORDER BY e.enrollmentID
+                """;
+        
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Enrollment enrollment = new Enrollment(
+                rs.getInt("enrollmentID"),
+                rs.getInt("studentID"),
+                rs.getInt("sectionID")
+            );
+            enrollment.setStudentName(rs.getString("studentName"));
+            enrollment.setCourseName(rs.getString("courseName"));
+            enrollment.setDayTime(rs.getString("day_time"));
+            enrollment.setTerm(rs.getString("term"));
+            return enrollment;
+        }, sectionId);
     }
 }

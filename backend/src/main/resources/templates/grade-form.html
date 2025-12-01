@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${grade.gradeID == 0 ? 'Add Grade' : 'Edit Grade'}">Grade Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${grade.gradeID == 0 ? '➕ Add New Grade' : '✏️ Edit Grade'}">Grade Form</h1>
+        
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        
+        <div class="form-container">
+            <form th:action="@{${grade.gradeID == 0 ? '/grades/add' : '/grades/edit/' + grade.gradeID}}" 
+                  method="post" th:object="${grade}">
+                
+                <div class="form-group">
+                    <label for="enrollmentID">Enrollment:</label>
+                    <select id="enrollmentID" name="enrollmentID" th:field="*{enrollmentID}" required>
+                        <option value="">Select an enrollment...</option>
+                        <option th:each="enrollment : ${enrollments}" 
+                                th:value="${enrollment.enrollmentID}" 
+                                th:text="${enrollment.enrollmentID + ' - Student ' + enrollment.studentID + ' in Section ' + enrollment.sectionID}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="grade">Grade:</label>
+                    <select id="grade" name="grade" th:field="*{grade}" required>
+                        <option value="">Select grade...</option>
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C+">C+</option>
+                        <option value="C">C</option>
+                        <option value="C-">C-</option>
+                        <option value="D">D</option>
+                        <option value="F">F</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit" 
+                        th:text="${grade.gradeID == 0 ? 'Add Grade' : 'Update Grade'}">Submit</button>
+                <a href="/grades" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+        
+        <footer>
+            <a href="/grades">← Back to Grades</a>
+        </footer>
+    </div>
+</body>
+</html>

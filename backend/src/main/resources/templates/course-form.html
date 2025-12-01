@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${course.courseID == 0 ? 'Add Course' : 'Edit Course'}">Course Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${course.courseID == 0 ? '➕ Add New Course' : '✏️ Edit Course'}">Course Form</h1>
+        
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        
+        <div class="form-container">
+            <form th:action="@{${course.courseID == 0 ? '/courses/add' : '/courses/edit/' + course.courseID}}" 
+                  method="post" th:object="${course}">
+                
+                <div class="form-group">
+                    <label for="courseName">Course Name:</label>
+                    <input type="text" id="courseName" name="courseName" th:value="*{courseName}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" th:text="*{description}" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit" 
+                        th:text="${course.courseID == 0 ? 'Add Course' : 'Update Course'}">Submit</button>
+                <a href="/courses" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+        
+        <footer>
+            <a href="/courses">← Back to Courses</a>
+        </footer>
+    </div>
+</body>
+</html>
