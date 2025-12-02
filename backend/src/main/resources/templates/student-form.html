@@ -16,17 +16,51 @@
                 
                 <div class="form-group">
                     <label for="firstName">First Name:</label>
-                    <input type="text" id="firstName" name="firstName" th:value="*{firstName}" required>
+                    <input type="text" id="firstName" name="firstName" th:value="*{firstName}" 
+                           placeholder="Enter first name" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="lastName">Last Name:</label>
-                    <input type="text" id="lastName" name="lastName" th:value="*{lastName}" required>
+                    <input type="text" id="lastName" name="lastName" th:value="*{lastName}" 
+                           placeholder="Enter last name" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="major">Major:</label>
-                    <input type="text" id="major" name="major" th:value="*{major}" required>
+                    <select id="major" name="major" required>
+                        <option value="">-- Select Major --</option>
+                        <optgroup label="Computer & Data Sciences">
+                            <option value="Computer Science" th:selected="${student.major == 'Computer Science'}">Computer Science</option>
+                            <option value="Data Science" th:selected="${student.major == 'Data Science'}">Data Science</option>
+                            <option value="Information Systems" th:selected="${student.major == 'Information Systems'}">Information Systems</option>
+                            <option value="Software Engineering" th:selected="${student.major == 'Software Engineering'}">Software Engineering</option>
+                        </optgroup>
+                        <optgroup label="Engineering">
+                            <option value="Engineering" th:selected="${student.major == 'Engineering'}">Engineering (General)</option>
+                            <option value="Electrical Engineering" th:selected="${student.major == 'Electrical Engineering'}">Electrical Engineering</option>
+                            <option value="Mechanical Engineering" th:selected="${student.major == 'Mechanical Engineering'}">Mechanical Engineering</option>
+                            <option value="Civil Engineering" th:selected="${student.major == 'Civil Engineering'}">Civil Engineering</option>
+                        </optgroup>
+                        <optgroup label="Natural Sciences">
+                            <option value="Mathematics" th:selected="${student.major == 'Mathematics'}">Mathematics</option>
+                            <option value="Physics" th:selected="${student.major == 'Physics'}">Physics</option>
+                            <option value="Chemistry" th:selected="${student.major == 'Chemistry'}">Chemistry</option>
+                            <option value="Biology" th:selected="${student.major == 'Biology'}">Biology</option>
+                        </optgroup>
+                        <optgroup label="Social Sciences">
+                            <option value="Psychology" th:selected="${student.major == 'Psychology'}">Psychology</option>
+                            <option value="Sociology" th:selected="${student.major == 'Sociology'}">Sociology</option>
+                            <option value="Political Science" th:selected="${student.major == 'Political Science'}">Political Science</option>
+                            <option value="Economics" th:selected="${student.major == 'Economics'}">Economics</option>
+                        </optgroup>
+                        <optgroup label="Humanities">
+                            <option value="History" th:selected="${student.major == 'History'}">History</option>
+                            <option value="Philosophy" th:selected="${student.major == 'Philosophy'}">Philosophy</option>
+                            <option value="Art History" th:selected="${student.major == 'Art History'}">Art History</option>
+                            <option value="English Literature" th:selected="${student.major == 'English Literature'}">English Literature</option>
+                        </optgroup>
+                    </select>
                 </div>
                 
                 <button type="submit" class="btn-submit" 

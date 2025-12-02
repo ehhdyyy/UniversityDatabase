@@ -12,26 +12,30 @@
         
         <div class="form-container">
             <form th:action="@{${enrollment.enrollmentID == 0 ? '/enrollments/add' : '/enrollments/edit/' + enrollment.enrollmentID}}" 
-                  method="post" th:object="${enrollment}">
+                  method="post">
                 
                 <div class="form-group">
                     <label for="studentID">Student:</label>
-                    <select id="studentID" name="studentID" th:field="*{studentID}" required>
-                        <option value="">Select a student...</option>
+                    <select id="studentID" name="studentID" required>
+                        <option value="">-- Select a Student --</option>
                         <option th:each="student : ${students}" 
                                 th:value="${student.studentID}" 
-                                th:text="${student.studentID + ' - ' + student.firstName + ' ' + student.lastName}">
+                                th:text="${student.studentID + ' - ' + student.firstName + ' ' + student.lastName + ' (' + student.major + ')'}"
+                                th:selected="${student.studentID == enrollment.studentID}">
                         </option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="sectionID">Section:</label>
-                    <select id="sectionID" name="sectionID" th:field="*{sectionID}" required>
-                        <option value="">Select a section...</option>
+                    <select id="sectionID" name="sectionID" required>
+                        <option value="">-- Select a Section --</option>
                         <option th:each="section : ${sections}" 
                                 th:value="${section.sectionID}" 
-                                th:text="${section.sectionID + ' - Course ' + section.courseID + ' (' + section.term + ')'}">
+                                th:selected="${section.sectionID == enrollment.sectionID}">
+                            <span th:text="${'Section ' + section.sectionID + ' - Course ' + section.courseID + 
+                                          ' (' + (section.courseName != null ? section.courseName : 'Unknown') + 
+                                          ') - ' + section.dayTime + ' - ' + section.term}"></span>
                         </option>
                     </select>
                 </div>

@@ -12,33 +12,49 @@
         
         <div class="form-container">
             <form th:action="@{${grade.gradeID == 0 ? '/grades/add' : '/grades/edit/' + grade.gradeID}}" 
-                  method="post" th:object="${grade}">
+                  method="post">
                 
                 <div class="form-group">
                     <label for="enrollmentID">Enrollment:</label>
-                    <select id="enrollmentID" name="enrollmentID" th:field="*{enrollmentID}" required>
-                        <option value="">Select an enrollment...</option>
+                    <select id="enrollmentID" name="enrollmentID" required>
+                        <option value="">-- Select an Enrollment --</option>
                         <option th:each="enrollment : ${enrollments}" 
                                 th:value="${enrollment.enrollmentID}" 
-                                th:text="${enrollment.enrollmentID + ' - Student ' + enrollment.studentID + ' in Section ' + enrollment.sectionID}">
+                                th:selected="${enrollment.enrollmentID == grade.enrollmentID}">
+                            <span th:text="${'Enrollment ' + enrollment.enrollmentID + 
+                                          ' - Student ID: ' + enrollment.studentID + 
+                                          ' - Section ID: ' + enrollment.sectionID}"></span>
                         </option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="grade">Grade:</label>
-                    <select id="grade" name="grade" th:field="*{grade}" required>
-                        <option value="">Select grade...</option>
-                        <option value="A">A</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B">B</option>
-                        <option value="B-">B-</option>
-                        <option value="C+">C+</option>
-                        <option value="C">C</option>
-                        <option value="C-">C-</option>
-                        <option value="D">D</option>
-                        <option value="F">F</option>
+                    <select id="grade" name="grade" required>
+                        <option value="">-- Select Grade --</option>
+                        <optgroup label="A Range">
+                            <option value="A+" th:selected="${grade.grade == 'A+'}">A+ (97-100)</option>
+                            <option value="A" th:selected="${grade.grade == 'A'}">A (93-96)</option>
+                            <option value="A-" th:selected="${grade.grade == 'A-'}">A- (90-92)</option>
+                        </optgroup>
+                        <optgroup label="B Range">
+                            <option value="B+" th:selected="${grade.grade == 'B+'}">B+ (87-89)</option>
+                            <option value="B" th:selected="${grade.grade == 'B'}">B (83-86)</option>
+                            <option value="B-" th:selected="${grade.grade == 'B-'}">B- (80-82)</option>
+                        </optgroup>
+                        <optgroup label="C Range">
+                            <option value="C+" th:selected="${grade.grade == 'C+'}">C+ (77-79)</option>
+                            <option value="C" th:selected="${grade.grade == 'C'}">C (73-76)</option>
+                            <option value="C-" th:selected="${grade.grade == 'C-'}">C- (70-72)</option>
+                        </optgroup>
+                        <optgroup label="D Range">
+                            <option value="D+" th:selected="${grade.grade == 'D+'}">D+ (67-69)</option>
+                            <option value="D" th:selected="${grade.grade == 'D'}">D (63-66)</option>
+                            <option value="D-" th:selected="${grade.grade == 'D-'}">D- (60-62)</option>
+                        </optgroup>
+                        <optgroup label="Failing">
+                            <option value="F" th:selected="${grade.grade == 'F'}">F (0-59)</option>
+                        </optgroup>
                     </select>
                 </div>
                 

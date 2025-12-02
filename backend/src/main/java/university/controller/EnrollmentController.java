@@ -50,14 +50,15 @@ public class EnrollmentController {
     }
 
     @GetMapping("/add")
-    public String showAddForm(Model model) {
+    public String showAddForm(Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("enrollment", new Enrollment());
             model.addAttribute("students", studentDAO.findAll());
-            model.addAttribute("sections", sectionDAO.findAll());
+            model.addAttribute("sections", sectionDAO.findAllWithDetails());
             return "enrollment-form";
         } catch (Exception e) {
-            model.addAttribute("error", "Error loading form: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error loading form: " + e.getMessage());
             return "redirect:/enrollments";
         }
     }
@@ -69,25 +70,27 @@ public class EnrollmentController {
             redirectAttributes.addFlashAttribute("message", "Enrollment added successfully!");
             return "redirect:/enrollments";
         } catch (Exception e) {
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "Error adding enrollment: " + e.getMessage());
             return "redirect:/enrollments/add";
         }
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable int id, Model model) {
+    public String showEditForm(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Enrollment enrollment = enrollmentDAO.findByID(id);
             if (enrollment == null) {
-                model.addAttribute("error", "Enrollment not found");
+                redirectAttributes.addFlashAttribute("error", "Enrollment not found");
                 return "redirect:/enrollments";
             }
             model.addAttribute("enrollment", enrollment);
             model.addAttribute("students", studentDAO.findAll());
-            model.addAttribute("sections", sectionDAO.findAll());
+            model.addAttribute("sections", sectionDAO.findAllWithDetails());
             return "enrollment-form";
         } catch (Exception e) {
-            model.addAttribute("error", "Error loading enrollment: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error loading enrollment: " + e.getMessage());
             return "redirect:/enrollments";
         }
     }

@@ -46,43 +46,20 @@ public class GradeController {
         }
     }
 
-    @GetMapping("/add")
-    public String showAddForm(Model model) {
-        try {
-            model.addAttribute("grade", new Grade());
-            model.addAttribute("enrollments", enrollmentDAO.findAll());
-            return "grade-form";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error loading form: " + e.getMessage());
-            return "redirect:/grades";
-        }
-    }
-
-    @PostMapping("/add")
-    public String addGrade(@ModelAttribute Grade grade, RedirectAttributes redirectAttributes) {
-        try {
-            gradeDAO.insert(grade);
-            redirectAttributes.addFlashAttribute("message", "Grade added successfully!");
-            return "redirect:/grades";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error adding grade: " + e.getMessage());
-            return "redirect:/grades/add";
-        }
-    }
-
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable int id, Model model) {
+    public String showEditForm(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Grade grade = gradeDAO.findByID(id);
             if (grade == null) {
-                model.addAttribute("error", "Grade not found");
+                redirectAttributes.addFlashAttribute("error", "Grade not found");
                 return "redirect:/grades";
             }
             model.addAttribute("grade", grade);
             model.addAttribute("enrollments", enrollmentDAO.findAll());
             return "grade-form";
         } catch (Exception e) {
-            model.addAttribute("error", "Error loading grade: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error loading grade: " + e.getMessage());
             return "redirect:/grades";
         }
     }

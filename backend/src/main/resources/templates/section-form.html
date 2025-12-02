@@ -12,34 +12,68 @@
         
         <div class="form-container">
             <form th:action="@{${section.sectionID == 0 ? '/sections/add' : '/sections/edit/' + section.sectionID}}" 
-                  method="post" th:object="${section}">
+                  method="post" onsubmit="return combineDayTime()">
                 
                 <div class="form-group">
                     <label for="courseID">Course:</label>
-                    <select id="courseID" name="courseID" th:field="*{courseID}" required>
-                        <option value="">Select a course...</option>
+                    <select id="courseID" name="courseID" required>
+                        <option value="">-- Select a Course --</option>
                         <option th:each="course : ${courses}" 
                                 th:value="${course.courseID}" 
-                                th:text="${course.courseID + ' - ' + course.courseName}">
+                                th:text="${course.courseID + ' - ' + course.courseName}"
+                                th:selected="${course.courseID == section.courseID}">
                         </option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="dayTime">Schedule (Day & Time):</label>
-                    <input type="text" id="dayTime" name="dayTime" th:value="*{dayTime}" 
-                           placeholder="e.g., Mon-Wed 10:00-11:30" required>
+                    <label for="dayPattern">Days of Week:</label>
+                    <select id="dayPattern" required>
+                        <option value="">-- Select Days --</option>
+                        <option value="Mon-Wed-Fri">Monday, Wednesday, Friday</option>
+                        <option value="Tue-Thu">Tuesday, Thursday</option>
+                        <option value="Mon-Wed">Monday, Wednesday</option>
+                        <option value="Monday">Monday Only</option>
+                        <option value="Tuesday">Tuesday Only</option>
+                        <option value="Wednesday">Wednesday Only</option>
+                        <option value="Thursday">Thursday Only</option>
+                        <option value="Friday">Friday Only</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="timeSlot">Time Slot:</label>
+                    <select id="timeSlot" required>
+                        <option value="">-- Select Time --</option>
+                        <option value="08:00-09:30">8:00 AM - 9:30 AM</option>
+                        <option value="09:00-10:30">9:00 AM - 10:30 AM</option>
+                        <option value="10:00-11:30">10:00 AM - 11:30 AM</option>
+                        <option value="11:00-12:30">11:00 AM - 12:30 PM</option>
+                        <option value="12:00-13:30">12:00 PM - 1:30 PM</option>
+                        <option value="13:00-14:30">1:00 PM - 2:30 PM</option>
+                        <option value="14:00-15:30">2:00 PM - 3:30 PM</option>
+                        <option value="15:00-16:30">3:00 PM - 4:30 PM</option>
+                        <option value="16:00-17:30">4:00 PM - 5:30 PM</option>
+                        <option value="17:00-18:30">5:00 PM - 6:30 PM</option>
+                        <option value="18:00-19:30">6:00 PM - 7:30 PM</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="term">Term:</label>
-                    <select id="term" name="term" th:field="*{term}" required>
-                        <option value="">Select term...</option>
-                        <option value="Fall 2024">Fall 2024</option>
-                        <option value="Spring 2025">Spring 2025</option>
-                        <option value="Spring 2026">Spring 2026</option>
+                    <select id="term" name="term" required>
+                        <option value="">-- Select Term --</option>
+                        <option value="Fall 2024" th:selected="${section.term == 'Fall 2024'}">Fall 2024</option>
+                        <option value="Spring 2025" th:selected="${section.term == 'Spring 2025'}">Spring 2025</option>
+                        <option value="Summer 2025" th:selected="${section.term == 'Summer 2025'}">Summer 2025</option>
+                        <option value="Fall 2025" th:selected="${section.term == 'Fall 2025'}">Fall 2025</option>
+                        <option value="Spring 2026" th:selected="${section.term == 'Spring 2026'}">Spring 2026</option>
+                        <option value="Summer 2026" th:selected="${section.term == 'Summer 2026'}">Summer 2026</option>
                     </select>
                 </div>
+                
+                <!-- Hidden field that will be submitted -->
+                <input type="hidden" id="dayTime" name="dayTime" value="">
                 
                 <button type="submit" class="btn-submit" 
                         th:text="${section.sectionID == 0 ? 'Add Section' : 'Update Section'}">Submit</button>
@@ -51,5 +85,52 @@
             <a href="/sections">← Back to Sections</a>
         </footer>
     </div>
+    
+    <script>
+        // Pre-populate dropdowns if editing
+        window.addEventListener('DOMContentLoaded', function() {
+            const existingDayTime = /*[[${section.dayTime}]]*/ '';
+            if (existingDayTime) {
+                // Try to parse existing dayTime
+                const parts = existingDayTime.split(' ');
+                if (parts.length >= 2) {
+                    const days = parts[0];
+                    const time = parts[1];
+                    
+                    // Set day pattern
+                    const daySelect = document.getElementById('dayPattern');
+                    for (let option of daySelect.options) {
+                        if (option.value === days) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+                    
+                    // Set time slot
+                    const timeSelect = document.getElementById('timeSlot');
+                    for (let option of timeSelect.options) {
+                        if (option.value === time) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Combine day pattern and time slot before submitting
+        function combineDayTime() {
+            const dayPattern = document.getElementById('dayPattern').value;
+            const timeSlot = document.getElementById('timeSlot').value;
+            
+            if (!dayPattern || !timeSlot) {
+                alert('Please select both days and time slot');
+                return false;
+            }
+            
+            document.getElementById('dayTime').value = dayPattern + ' ' + timeSlot;
+            return true;
+        }
+    </script>
 </body>
 </html>

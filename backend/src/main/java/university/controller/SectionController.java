@@ -47,13 +47,14 @@ public class SectionController {
     }
 
     @GetMapping("/add")
-    public String showAddForm(Model model) {
+    public String showAddForm(Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("section", new Section());
             model.addAttribute("courses", courseDAO.findAll());
             return "section-form";
         } catch (Exception e) {
-            model.addAttribute("error", "Error loading form: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error loading form: " + e.getMessage());
             return "redirect:/sections";
         }
     }
@@ -65,24 +66,26 @@ public class SectionController {
             redirectAttributes.addFlashAttribute("message", "Section added successfully!");
             return "redirect:/sections";
         } catch (Exception e) {
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "Error adding section: " + e.getMessage());
             return "redirect:/sections/add";
         }
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable int id, Model model) {
+    public String showEditForm(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Section section = sectionDAO.findByID(id);
             if (section == null) {
-                model.addAttribute("error", "Section not found");
+                redirectAttributes.addFlashAttribute("error", "Section not found");
                 return "redirect:/sections";
             }
             model.addAttribute("section", section);
             model.addAttribute("courses", courseDAO.findAll());
             return "section-form";
         } catch (Exception e) {
-            model.addAttribute("error", "Error loading section: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error loading section: " + e.getMessage());
             return "redirect:/sections";
         }
     }
