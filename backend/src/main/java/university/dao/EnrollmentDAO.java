@@ -23,7 +23,6 @@ public class EnrollmentDAO {
                     sectionID INT NOT NULL REFERENCES sections(sectionID) ON DELETE CASCADE,
                     UNIQUE(studentID, sectionID)
                 );
-
                 """;
         jdbc.execute(sql);
     }
@@ -47,6 +46,23 @@ public class EnrollmentDAO {
                     (14, 7),
                     (15, 8)
                     ;
+                """;
+        jdbc.execute(sql);
+    }
+
+    public void newEnrollmentGradeTrigger() throws SQLException {
+        String sql = """
+                CREATE OR REPLACE FUNCTION newEnrollmentGradeTrigger()
+                RETURNS TRIGGER AS $$
+                BEGIN
+                    INSERT INTO grades(enrollmentID, grade) VALUES(NEW.enrollmentID, 'NA');
+                    RETURN NEW;
+                END;
+                $$ LANGUAGE plpgsql;
+                
+                CREATE TRIGGER after_enrollment_insert
+                AFTER INSERT ON enrollments
+                FOR EACH ROW EXECUTE FUNCTION newEnrollmentGradeTrigger();
                 """;
         jdbc.execute(sql);
     }

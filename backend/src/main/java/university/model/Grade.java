@@ -1,5 +1,6 @@
 package university.model;
 
+//Grade class
 public class Grade {
     
     private int gradeID;

@@ -1,5 +1,6 @@
 package university.model;
 
+//Enrollment class
 public class Enrollment {
     
     private int enrollmentID;

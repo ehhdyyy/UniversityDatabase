@@ -1,5 +1,7 @@
 package university.model;
 
+
+//Student class
 public class Student {
     
     private int studentID;

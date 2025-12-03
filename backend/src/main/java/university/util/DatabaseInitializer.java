@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import university.dao.*;
 import university.model.*;
 
+
+//Component to initialize the database with tables and sample data at application startup
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 
@@ -31,17 +33,23 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
+            // Create tables
             courseDAO.createTable();
             enrollmentDAO.createTable();
             gradeDAO.createTable();
             sectionDAO.createTable();
             studentDAO.createTable();
+
+            // Populate sample data
             
             studentDAO.populateStudents();
             courseDAO.populateCourses();
             sectionDAO.populateSections();
             enrollmentDAO.populateEnrollments();
             gradeDAO.populateGrades();
+
+            // Insert any triggers
+            enrollmentDAO.newEnrollmentGradeTrigger();
 
         } catch (Exception e) {
             e.printStackTrace();
