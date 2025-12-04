@@ -1,5 +1,6 @@
 # University Database 
-Java + JDBC demo with PostgreSQL
+Java + JDBC demo with PostgreSQL.  
+This is a university database management system designed for university administrators to register students into the database. This system supports courses, course sections, student indexing, student enrollments, and student grade records for courses.
 
 ## Tech Stack
 - Gradle 9.2+ (via wrapper)
